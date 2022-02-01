@@ -1,0 +1,3 @@
+com\mycompany\centralniserver\endpoints\EndpointMesto.class
+com\mycompany\centralniserver\JAXRSConfiguration.class
+com\mycompany\centralniserver\resources\JavaEE8Resource.class
