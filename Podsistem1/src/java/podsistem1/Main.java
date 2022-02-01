@@ -61,12 +61,7 @@ public class Main {
         }
         return producer;
     }
-    
-    
-    
-//    public static JMSContext context = cf.createContext();
-//    public static JMSProducer producer = context.createProducer();
-    
+        
     public static void close() {
         em.close();
         emf.close();
@@ -104,17 +99,49 @@ public class Main {
         et.commit();
     }
     
+    private static void request3(String parameter) {
+        StringTokenizer st = new StringTokenizer(parameter, "###");
+        String naziv = st.nextToken();
+        String adresa = st.nextToken();
+        int idMes = Integer.parseInt(st.nextToken());
+        
+        Mesto mesto = em.createNamedQuery("Mesto.findByIdmes", Mesto.class).setParameter("idmes", idMes).getSingleResult();
+        EntityTransaction et = em.getTransaction();
+        et.begin();
+        Komitent komitent = new Komitent();
+        komitent.setNaziv(naziv);
+        komitent.setAdresa(adresa);
+        komitent.setIdmes(mesto);
+        em.persist(komitent);
+        et.commit();
+    }
+    
+    private static void request4(String parameter) {
+        StringTokenizer st = new StringTokenizer(parameter, "###");
+        int idKom = Integer.parseInt(st.nextToken());
+        int idMes = Integer.parseInt(st.nextToken());
+        
+        EntityTransaction et = em.getTransaction();
+        et.begin();
+        Komitent komitent = em.createNamedQuery("Komitent.findByIdkom", Komitent.class)
+                .setParameter("idkom", idKom).getSingleResult();
+        Mesto mesto = em.createNamedQuery("Mesto.findByIdmes", Mesto.class)
+                .setParameter("idmes", idMes).getSingleResult();
+        komitent.setIdmes(mesto);
+        em.persist(komitent);
+        et.commit();
+    }
+    
     private static void request10() {
         try {
-//            JMSContext context = cf.createContext();
-//            JMSProducer producer = context.createProducer();
             
             List<Mesto> listaMesta = em.createNamedQuery("Mesto.findAll").getResultList();
             StringBuilder sb = new StringBuilder();
+            sb.append("Id Mesta###Naziv###Postanski Broj");
             for(Mesto mesto : listaMesta) {
-                sb.append("IdMes: ").append(mesto.getIdmes());
-                sb.append(", Naziv: ").append(mesto.getNaziv());            
-                sb.append(", Postanski broj: ").append(mesto.getPostanskibroj()).append("###");
+                sb.append("@@@").append(mesto.getIdmes())
+                    .append("###").append(mesto.getNaziv())
+                    .append("###").append(mesto.getPostanskibroj());
             }
             TextMessage txtMsg = getContext().createTextMessage(sb.toString());
             txtMsg.setIntProperty("request", 10);
@@ -124,16 +151,14 @@ public class Main {
     
     private static void request11() {
         try {
-//            JMSContext context = cf.createContext();
-//            JMSProducer producer = context.createProducer();
-            
             List<Filijala> listaFilijala = em.createNamedQuery("Filijala.findAll").getResultList();
             StringBuilder sb = new StringBuilder();
+            sb.append("Id Filijale###Naziv###Adresa###Mesto");
             for(Filijala filijala : listaFilijala) {
-                sb.append("IdFil: ").append(filijala.getIdfil());
-                sb.append(", Naziv: ").append(filijala.getNaziv());
-                sb.append(", Adresa: ").append(filijala.getAdresa());
-                sb.append(", Mesto: ").append(filijala.getIdmes().getNaziv()).append("###");
+                sb.append("@@@").append(filijala.getIdfil())
+                    .append("###").append(filijala.getNaziv())
+                    .append("###").append(filijala.getAdresa())
+                    .append("###").append(filijala.getIdmes().getNaziv());
             }
             TextMessage txtMsg = getContext().createTextMessage(sb.toString());
             txtMsg.setIntProperty("request", 11);
@@ -143,16 +168,15 @@ public class Main {
     
     private static void request12() {
         try {
-//            JMSContext context = cf.createContext();
-//            JMSProducer producer = context.createProducer();
             
             List<Komitent> listaKomitenata = em.createNamedQuery("Komitent.findAll").getResultList();
             StringBuilder sb = new StringBuilder();
+            sb.append("Id Komitenta###Naziv###Adresa###Mesto");
             for(Komitent komitent : listaKomitenata) {
-                sb.append("IdKom: ").append(komitent.getIdkom());
-                sb.append(", Naziv: ").append(komitent.getNaziv());
-                sb.append(", Adresa: ").append(komitent.getAdresa());
-                sb.append(", Mesto: ").append(komitent.getIdmes().getNaziv()).append("###");
+                sb.append("@@@").append(komitent.getIdkom())
+                    .append("###").append(komitent.getNaziv())
+                    .append("###").append(komitent.getAdresa())
+                    .append("###").append(komitent.getIdmes().getNaziv());
             }
             TextMessage txtMsg = getContext().createTextMessage(sb.toString());
             txtMsg.setIntProperty("request", 12);
@@ -178,8 +202,10 @@ public class Main {
                         request2((String)objMsg.getObject());
                         break;
                     case 3:
+                        request3((String)objMsg.getObject());
                         break;
                     case 4:
+                        request4((String)objMsg.getObject());
                         break;
                     case 10:
                         request10();
@@ -192,7 +218,6 @@ public class Main {
                         break;
                 }
             } catch (JMSException ex) {}
-            
         }
     }
     
