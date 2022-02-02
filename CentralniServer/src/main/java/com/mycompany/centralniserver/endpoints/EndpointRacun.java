@@ -19,6 +19,7 @@ import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
@@ -69,6 +70,20 @@ public class EndpointRacun {
         ObjectMessage objMsg = context.createObjectMessage(parameter);
         try {
             objMsg.setIntProperty("request", 5);
+        } catch (JMSException ex) {}
+        producer.send(requestTopic, objMsg);
+        
+        return Response.status(Response.Status.OK).build();
+    }
+    
+    @PUT
+    public Response zatvoriRacun(String parameter) {
+        if(sContext == null) sContext = cf.createContext();
+        JMSContext context = sContext;
+        JMSProducer producer = context.createProducer();
+        ObjectMessage objMsg = context.createObjectMessage(parameter);
+        try {
+            objMsg.setIntProperty("request", 6);
         } catch (JMSException ex) {}
         producer.send(requestTopic, objMsg);
         

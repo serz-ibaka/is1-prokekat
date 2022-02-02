@@ -7,6 +7,8 @@ package podsistem1;
 
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;
@@ -80,6 +82,18 @@ public class Main {
         mesto.setPostanskibroj(postanskiBroj);
         em.persist(mesto);
         et.commit();
+        
+        parameter = mesto.getIdmes() + "###" + parameter;
+        ObjectMessage objMsg = getContext().createObjectMessage();
+       
+        try {
+            objMsg.setIntProperty("request", 21);
+            objMsg.setStringProperty("parameter", parameter); // id, naziv, broj
+        } catch (JMSException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        getProducer().send(requestTopic, objMsg);
+        
     }
     
     private static void request2(String parameter) {
@@ -88,7 +102,13 @@ public class Main {
         String adresa = st.nextToken();
         int idMes = Integer.parseInt(st.nextToken());
         
-        Mesto mesto = em.createNamedQuery("Mesto.findByIdmes", Mesto.class).setParameter("idmes", idMes).getSingleResult();
+        Mesto mesto;
+        try {
+            mesto = em.createNamedQuery("Mesto.findByIdmes", Mesto.class).setParameter("idmes", idMes).getSingleResult();
+        } catch(Exception e) {
+            // mesto ne postoji
+            return;
+        }
         EntityTransaction et = em.getTransaction();
         et.begin();
         Filijala filijala = new Filijala();
@@ -97,6 +117,17 @@ public class Main {
         filijala.setIdmes(mesto);
         em.persist(filijala);
         et.commit();
+        
+        parameter = filijala.getIdfil() + "###" + parameter;
+        ObjectMessage objMsg = getContext().createObjectMessage();
+       
+        try {
+            objMsg.setIntProperty("request", 22);
+            objMsg.setStringProperty("parameter", parameter); // id, naziv, adresa, mesto
+        } catch (JMSException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        getProducer().send(requestTopic, objMsg);
     }
     
     private static void request3(String parameter) {
@@ -105,7 +136,13 @@ public class Main {
         String adresa = st.nextToken();
         int idMes = Integer.parseInt(st.nextToken());
         
-        Mesto mesto = em.createNamedQuery("Mesto.findByIdmes", Mesto.class).setParameter("idmes", idMes).getSingleResult();
+        Mesto mesto;
+        try {
+            mesto = em.createNamedQuery("Mesto.findByIdmes", Mesto.class).setParameter("idmes", idMes).getSingleResult();
+        } catch(Exception e) {
+            // mesto ne postoji
+            return;
+        }
         EntityTransaction et = em.getTransaction();
         et.begin();
         Komitent komitent = new Komitent();
@@ -114,22 +151,53 @@ public class Main {
         komitent.setIdmes(mesto);
         em.persist(komitent);
         et.commit();
+        
+        parameter = komitent.getIdkom() + "###" + parameter;
+        ObjectMessage objMsg = getContext().createObjectMessage();
+       
+        try {
+            objMsg.setIntProperty("request", 23);
+            objMsg.setStringProperty("parameter", parameter); // id, naziv, adresa, idmes
+        } catch (JMSException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        getProducer().send(requestTopic, objMsg);
     }
     
     private static void request4(String parameter) {
         StringTokenizer st = new StringTokenizer(parameter, "###");
         int idKom = Integer.parseInt(st.nextToken());
         int idMes = Integer.parseInt(st.nextToken());
+        String adresa = st.nextToken();
         
+        Komitent komitent;
+        Mesto mesto;
+        try {
+            komitent = em.createNamedQuery("Komitent.findByIdkom", Komitent.class)
+                .setParameter("idkom", idKom).getSingleResult();
+            mesto = em.createNamedQuery("Mesto.findByIdmes", Mesto.class)
+                .setParameter("idmes", idMes).getSingleResult();
+        } catch(Exception e) {
+            // ne postoji komitent ili mesto
+            return;
+        }
         EntityTransaction et = em.getTransaction();
         et.begin();
-        Komitent komitent = em.createNamedQuery("Komitent.findByIdkom", Komitent.class)
-                .setParameter("idkom", idKom).getSingleResult();
-        Mesto mesto = em.createNamedQuery("Mesto.findByIdmes", Mesto.class)
-                .setParameter("idmes", idMes).getSingleResult();
         komitent.setIdmes(mesto);
+        komitent.setAdresa(adresa);
         em.persist(komitent);
         et.commit();
+        
+        parameter = idKom + "###" + idMes + "###" + adresa;
+        ObjectMessage objMsg = getContext().createObjectMessage();
+       
+        try {
+            objMsg.setIntProperty("request", 24);
+            objMsg.setStringProperty("parameter", parameter); // id, naziv, broj, idmes
+        } catch (JMSException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        getProducer().send(requestTopic, objMsg);
     }
     
     private static void request10() {

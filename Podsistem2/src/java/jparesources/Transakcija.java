@@ -51,7 +51,7 @@ public class Transakcija implements Serializable {
     @NotNull
     @Column(name = "obavljanje")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date obavljanje;
+    private Date obavljanje = new Date(System.currentTimeMillis());
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
