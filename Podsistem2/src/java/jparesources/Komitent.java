@@ -11,6 +11,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -56,9 +57,9 @@ public class Komitent implements Serializable {
     @Column(name = "adresa")
     private String adresa;
     @JoinColumn(name = "idmes", referencedColumnName = "idmes")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Mesto idmes;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idkom")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idkom", fetch = FetchType.EAGER)
     private List<Racun> racunList;
 
     public Komitent() {

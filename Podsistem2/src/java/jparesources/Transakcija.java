@@ -12,6 +12,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -57,14 +58,14 @@ public class Transakcija implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "svrha")
     private String svrha;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "transakcija")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "transakcija", fetch = FetchType.EAGER)
     private Isplata isplata;
     @JoinColumn(name = "idrac", referencedColumnName = "idrac", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Racun racun;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "transakcija")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "transakcija", fetch = FetchType.EAGER)
     private Prenos prenos;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "transakcija")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "transakcija", fetch = FetchType.EAGER)
     private Uplata uplata;
 
     public Transakcija() {

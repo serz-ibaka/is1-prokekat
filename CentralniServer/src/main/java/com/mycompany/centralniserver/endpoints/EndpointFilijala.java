@@ -5,6 +5,7 @@
  */
 package com.mycompany.centralniserver.endpoints;
 
+import static com.mycompany.centralniserver.endpoints.EndpointKomitent.sContext;
 import javax.annotation.Resource;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;
@@ -37,8 +38,8 @@ public class EndpointFilijala {
     
     @GET
     public Response dohvatiFilijale() {
-        if(EndpointKomitent.sContext == null) EndpointKomitent.sContext = cf.createContext();
-        JMSContext context = EndpointKomitent.sContext;
+        if(sContext == null) sContext = cf.createContext();
+        JMSContext context = sContext;
         JMSProducer producer = context.createProducer();
         ObjectMessage objMsg = context.createObjectMessage();
         try {

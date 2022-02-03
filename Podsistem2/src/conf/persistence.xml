@@ -10,6 +10,14 @@
     <class>jparesources.Racun</class>
     <class>jparesources.Transakcija</class>
     <class>jparesources.Uplata</class>
+    <class>podsistem2.Isplata</class>
+    <class>podsistem2.Prenos</class>
+    <class>podsistem2.Uplata</class>
+    <class>podsistem2.Filijala</class>
+    <class>podsistem2.Transakcija</class>
+    <class>podsistem2.Mesto</class>
+    <class>podsistem2.Racun</class>
+    <class>podsistem2.Komitent</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3308/banka_podsistem2?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
       <property name="javax.persistence.jdbc.user" value="root"/>

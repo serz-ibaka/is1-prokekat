@@ -5,6 +5,7 @@
  */
 package com.mycompany.centralniserver.endpoints;
 
+import static com.mycompany.centralniserver.endpoints.EndpointKomitent.sContext;
 import javax.annotation.Resource;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;

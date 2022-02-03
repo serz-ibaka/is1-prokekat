@@ -5,6 +5,7 @@
  */
 package podsistem2;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import javax.annotation.Resource;
@@ -20,18 +21,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import jparesources.Filijala;
-import jparesources.Isplata;
-import jparesources.IsplataPK;
-import jparesources.Komitent;
-import jparesources.Mesto;
-import jparesources.Prenos;
-import jparesources.PrenosPK;
-import jparesources.Racun;
-import jparesources.Transakcija;
-import jparesources.TransakcijaPK;
-import jparesources.Uplata;
-import jparesources.UplataPK;
+import jparesources.*;
 
 /**
  *
@@ -77,6 +67,7 @@ public class Main {
     }
     
     private static void request5(String parameter) {
+        System.out.println("Ovdje sam");
         StringTokenizer st = new StringTokenizer(parameter, "###");
         float dozvoljeniMinus = Float.parseFloat(st.nextToken());
         int idKom = Integer.parseInt(st.nextToken());
@@ -168,6 +159,9 @@ public class Main {
         prenosNa.setPrenosPK(new PrenosPK(idRacNa, racunNa.getBrojtransakcija()));
         prenosSa.setTransakcija(transakcijaSa);
         prenosNa.setTransakcija(transakcijaNa);
+        
+        transakcijaSa.setPrenos(prenosSa);
+        transakcijaNa.setPrenos(prenosNa);
         
         em.persist(racunSa);
         em.persist(racunNa);
@@ -278,7 +272,7 @@ public class Main {
             List<Racun> listaRacuna = em.createQuery("SELECT r FROM Racun r WHERE r.idkom = :idkom", Racun.class)
                     .setParameter("idkom", komitent).getResultList();
             StringBuilder sb = new StringBuilder();
-            sb.append("Id Racuna###Stanje###Dozvoljeni Minus###Status###Datum Otvaranja###Broj Transakcija###Komitent###Mesto");
+//            sb.append("Id Racuna###Stanje###Dozvoljeni Minus###Status###Datum Otvaranja###Broj Transakcija###Komitent###Mesto");
             for(Racun racun : listaRacuna) {
                 sb.append("@@@").append(racun.getIdrac())
                     .append("###").append(racun.getStanje())
@@ -300,7 +294,7 @@ public class Main {
             List<Transakcija> listaTransakcija = em.createNamedQuery("Transakcija.findByIdrac", Transakcija.class)
                     .setParameter("idrac", idRac).getResultList();
             StringBuilder sb = new StringBuilder();
-            sb.append("Id Racuna###Redni Broj###Iznos###Datum Obavljanja###Svrha###Tip Transakcije###Id Racuna Sa###Id Racuna Na");
+//            sb.append("Id Racuna###Redni Broj###Iznos###Datum Obavljanja###Svrha###Tip Transakcije###Id Racuna Sa###Id Racuna Na");
             for(Transakcija transakcija : listaTransakcija) {
                 sb.append("@@@").append(transakcija.getTransakcijaPK().getIdrac())
                     .append("###").append(transakcija.getTransakcijaPK().getRednibroj())
@@ -319,7 +313,7 @@ public class Main {
                     sb.append("###").append("Prenos")
                         .append("###").append(transakcija.getPrenos().getIdracsa().getIdrac())
                         .append("###").append(transakcija.getPrenos().getIdracna().getIdrac());
-                }
+                } else {System.out.println("kita kita kita");}
             }
             TextMessage txtMsg = getContext().createTextMessage(sb.toString());
             txtMsg.setIntProperty("request", 14);
@@ -389,10 +383,138 @@ public class Main {
         et.commit();
     }
     
+    private static void request25() {
+        List<Mesto> listaMesta1 = em.createNamedQuery("Mesto.findAll", Mesto.class).getResultList();
+        ArrayList<Mesto> listaMesta = new ArrayList<>(listaMesta1);
+        List<Filijala> listaFilijala1 = em.createNamedQuery("Filijala.findAll", Filijala.class).getResultList();
+        ArrayList<Filijala> listaFilijala = new ArrayList<>(listaFilijala1);
+        List<Komitent> listaKomitenata1 = em.createNamedQuery("Komitent.findAll", Komitent.class).getResultList();
+        ArrayList<Komitent> listaKomitenata = new ArrayList<>(listaKomitenata1);
+        List<Racun> listaRacuna1 = em.createNamedQuery("Racun.findAll", Racun.class).getResultList();
+        ArrayList<Racun> listaRacuna = new ArrayList<>(listaRacuna1);
+        List<Transakcija> listaTransakcija1 = em.createNamedQuery("Transakcija.findAll", Transakcija.class).getResultList();
+        ArrayList<Transakcija> listaTransakcija = new ArrayList<>(listaTransakcija1);
+        List<Uplata> listaUplata1 = em.createNamedQuery("Uplata.findAll", Uplata.class).getResultList();
+        ArrayList<Uplata> listaUplata = new ArrayList<>(listaUplata1);
+        List<Isplata> listaIsplata1 = em.createNamedQuery("Isplata.findAll", Isplata.class).getResultList();
+        ArrayList<Isplata> listaIsplata = new ArrayList<>(listaIsplata1);
+        List<Prenos> listaPrenosa1 = em.createNamedQuery("Prenos.findAll", Prenos.class).getResultList();
+        ArrayList<Prenos> listaPrenosa = new ArrayList<>(listaPrenosa1);
+        
+        try {
+            ObjectMessage msgMesto = getContext().createObjectMessage();
+            msgMesto.setIntProperty("request", 25);
+            msgMesto.setStringProperty("tabela", "mesto");
+            msgMesto.setObject(listaMesta);
+            getProducer().send(responseTopic, msgMesto);
+            
+            ObjectMessage msgFilijala = getContext().createObjectMessage();
+            msgFilijala.setIntProperty("request", 25);
+            msgFilijala.setStringProperty("tabela", "filijala");
+            msgFilijala.setObject(listaFilijala);
+            getProducer().send(responseTopic, msgFilijala);
+            
+            ObjectMessage msgKomitent = getContext().createObjectMessage();
+            msgKomitent.setIntProperty("request", 25);
+            msgKomitent.setStringProperty("tabela", "komitent");
+            msgKomitent.setObject(listaKomitenata);
+            getProducer().send(responseTopic, msgKomitent);
+            ObjectMessage msgRacun = getContext().createObjectMessage();
+            msgRacun.setIntProperty("request", 25);
+            msgRacun.setStringProperty("tabela", "racun");
+            msgRacun.setObject(listaRacuna);
+            getProducer().send(responseTopic, msgRacun);
+            ObjectMessage msgTransakcija = getContext().createObjectMessage();
+            msgTransakcija.setIntProperty("request", 25);
+            msgTransakcija.setStringProperty("tabela", "transakcija");
+            msgTransakcija.setObject(listaTransakcija);
+            getProducer().send(responseTopic, msgTransakcija);
+            ObjectMessage msgUplata = getContext().createObjectMessage();
+            msgUplata.setIntProperty("request", 25);
+            msgUplata.setStringProperty("tabela", "uplata");
+            msgUplata.setObject(listaUplata);
+            getProducer().send(responseTopic, msgUplata);
+            ObjectMessage msgIsplata = getContext().createObjectMessage();
+            msgIsplata.setIntProperty("request", 25);
+            msgIsplata.setStringProperty("tabela", "isplata");
+            msgIsplata.setObject(listaIsplata);
+            getProducer().send(responseTopic, msgIsplata);
+            ObjectMessage msgPrenos = getContext().createObjectMessage();
+            msgPrenos.setIntProperty("request", 25);
+            msgPrenos.setStringProperty("tabela", "prenos");
+            msgPrenos.setObject(listaPrenosa);
+            getProducer().send(responseTopic, msgPrenos);
+        } catch(JMSException e) {}
+    }
+    
+    private static void request31() {
+        List<Mesto> listaMesta1 = em.createNamedQuery("Mesto.findAll", Mesto.class).getResultList();
+        ArrayList<Mesto> listaMesta = new ArrayList<>(listaMesta1);
+        List<Filijala> listaFilijala1 = em.createNamedQuery("Filijala.findAll", Filijala.class).getResultList();
+        ArrayList<Filijala> listaFilijala = new ArrayList<>(listaFilijala1);
+        List<Komitent> listaKomitenata1 = em.createNamedQuery("Komitent.findAll", Komitent.class).getResultList();
+        ArrayList<Komitent> listaKomitenata = new ArrayList<>(listaKomitenata1);
+        List<Racun> listaRacuna1 = em.createNamedQuery("Racun.findAll", Racun.class).getResultList();
+        ArrayList<Racun> listaRacuna = new ArrayList<>(listaRacuna1);
+        List<Transakcija> listaTransakcija1 = em.createNamedQuery("Transakcija.findAll", Transakcija.class).getResultList();
+        ArrayList<Transakcija> listaTransakcija = new ArrayList<>(listaTransakcija1);
+        List<Uplata> listaUplata1 = em.createNamedQuery("Uplata.findAll", Uplata.class).getResultList();
+        ArrayList<Uplata> listaUplata = new ArrayList<>(listaUplata1);
+        List<Isplata> listaIsplata1 = em.createNamedQuery("Isplata.findAll", Isplata.class).getResultList();
+        ArrayList<Isplata> listaIsplata = new ArrayList<>(listaIsplata1);
+        List<Prenos> listaPrenosa1 = em.createNamedQuery("Prenos.findAll", Prenos.class).getResultList();
+        ArrayList<Prenos> listaPrenosa = new ArrayList<>(listaPrenosa1);
+        
+        try {
+            ObjectMessage msgMesto = getContext().createObjectMessage();
+            msgMesto.setIntProperty("request", 31);
+            msgMesto.setStringProperty("tabela", "mesto");
+            msgMesto.setObject(listaMesta);
+            getProducer().send(responseTopic, msgMesto);
+            
+            ObjectMessage msgFilijala = getContext().createObjectMessage();
+            msgFilijala.setIntProperty("request", 31);
+            msgFilijala.setStringProperty("tabela", "filijala");
+            msgFilijala.setObject(listaFilijala);
+            getProducer().send(responseTopic, msgFilijala);
+            
+            ObjectMessage msgKomitent = getContext().createObjectMessage();
+            msgKomitent.setIntProperty("request", 31);
+            msgKomitent.setStringProperty("tabela", "komitent");
+            msgKomitent.setObject(listaKomitenata);
+            getProducer().send(responseTopic, msgKomitent);
+            ObjectMessage msgRacun = getContext().createObjectMessage();
+            msgRacun.setIntProperty("request", 31);
+            msgRacun.setStringProperty("tabela", "racun");
+            msgRacun.setObject(listaRacuna);
+            getProducer().send(responseTopic, msgRacun);
+            ObjectMessage msgTransakcija = getContext().createObjectMessage();
+            msgTransakcija.setIntProperty("request", 31);
+            msgTransakcija.setStringProperty("tabela", "transakcija");
+            msgTransakcija.setObject(listaTransakcija);
+            getProducer().send(responseTopic, msgTransakcija);
+            ObjectMessage msgUplata = getContext().createObjectMessage();
+            msgUplata.setIntProperty("request", 31);
+            msgUplata.setStringProperty("tabela", "uplata");
+            msgUplata.setObject(listaUplata);
+            getProducer().send(responseTopic, msgUplata);
+            ObjectMessage msgIsplata = getContext().createObjectMessage();
+            msgIsplata.setIntProperty("request", 31);
+            msgIsplata.setStringProperty("tabela", "isplata");
+            msgIsplata.setObject(listaIsplata);
+            getProducer().send(responseTopic, msgIsplata);
+            ObjectMessage msgPrenos = getContext().createObjectMessage();
+            msgPrenos.setIntProperty("request", 31);
+            msgPrenos.setStringProperty("tabela", "prenos");
+            msgPrenos.setObject(listaPrenosa);
+            getProducer().send(responseTopic, msgPrenos);
+        } catch(JMSException e) {}
+    }
+    
     public static void main(String[] args) {
-//        JMSContext context = cf.createContext();
         JMSConsumer consumer = getContext().createConsumer(requestTopic, 
-            "request=5 OR request=6 OR request=7 OR request=8 OR request=9 OR request=13 OR request=14 OR request=21 OR request=22 OR request=23 OR request=24", false);
+            "request=5 OR request=6 OR request=7 OR request=8 OR request=9 OR request=13 OR "
+          + "request=14 OR request=21 OR request=22 OR request=23 OR request=24 OR request=25 OR request=31", false);
         while(true) {
             try {
                 ObjectMessage objMsg = (ObjectMessage) consumer.receive();
@@ -429,6 +551,12 @@ public class Main {
                         break;
                     case 24:
                         request24(objMsg.getStringProperty("parameter"));
+                        break;
+                    case 25:
+                        request25();
+                        break;
+                    case 31:
+                        request31();
                         break;
                 }
             } catch (JMSException ex) {}

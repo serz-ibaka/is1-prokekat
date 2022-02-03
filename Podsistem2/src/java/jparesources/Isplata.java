@@ -8,6 +8,7 @@ package jparesources;
 import java.io.Serializable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -34,15 +35,15 @@ public class Isplata implements Serializable {
     @EmbeddedId
     protected IsplataPK isplataPK;
     @JoinColumn(name = "idfil", referencedColumnName = "idfil")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Filijala idfil;
     @JoinColumn(name = "idracsa", referencedColumnName = "idrac")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Racun idracsa;
     @JoinColumns({
         @JoinColumn(name = "idrac", referencedColumnName = "idrac", insertable = false, updatable = false),
         @JoinColumn(name = "rednibroj", referencedColumnName = "rednibroj", insertable = false, updatable = false)})
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, fetch = FetchType.EAGER)
     private Transakcija transakcija;
 
     public Isplata() {

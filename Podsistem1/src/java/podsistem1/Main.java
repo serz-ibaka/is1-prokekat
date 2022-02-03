@@ -205,7 +205,7 @@ public class Main {
             
             List<Mesto> listaMesta = em.createNamedQuery("Mesto.findAll").getResultList();
             StringBuilder sb = new StringBuilder();
-            sb.append("Id Mesta###Naziv###Postanski Broj");
+//            sb.append("Id Mesta###Naziv###Postanski Broj");
             for(Mesto mesto : listaMesta) {
                 sb.append("@@@").append(mesto.getIdmes())
                     .append("###").append(mesto.getNaziv())
@@ -221,7 +221,7 @@ public class Main {
         try {
             List<Filijala> listaFilijala = em.createNamedQuery("Filijala.findAll").getResultList();
             StringBuilder sb = new StringBuilder();
-            sb.append("Id Filijale###Naziv###Adresa###Mesto");
+//            sb.append("Id Filijale###Naziv###Adresa###Mesto");
             for(Filijala filijala : listaFilijala) {
                 sb.append("@@@").append(filijala.getIdfil())
                     .append("###").append(filijala.getNaziv())
@@ -239,7 +239,7 @@ public class Main {
             
             List<Komitent> listaKomitenata = em.createNamedQuery("Komitent.findAll").getResultList();
             StringBuilder sb = new StringBuilder();
-            sb.append("Id Komitenta###Naziv###Adresa###Mesto");
+//            sb.append("Id Komitenta###Naziv###Adresa###Mesto");
             for(Komitent komitent : listaKomitenata) {
                 sb.append("@@@").append(komitent.getIdkom())
                     .append("###").append(komitent.getNaziv())

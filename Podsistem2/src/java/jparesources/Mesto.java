@@ -11,6 +11,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -52,11 +53,11 @@ public class Mesto implements Serializable {
     @NotNull
     @Column(name = "postanskibroj")
     private int postanskibroj;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idmes")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idmes", fetch = FetchType.EAGER)
     private List<Filijala> filijalaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idmes")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idmes", fetch = FetchType.EAGER)
     private List<Komitent> komitentList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idmes")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idmes", fetch = FetchType.EAGER)
     private List<Racun> racunList;
 
     public Mesto() {

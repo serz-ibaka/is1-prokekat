@@ -12,6 +12,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -71,21 +72,21 @@ public class Racun implements Serializable {
     @NotNull
     @Column(name = "brojtransakcija")
     private int brojtransakcija = 0;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idracsa")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idracsa", fetch = FetchType.EAGER)
     private List<Isplata> isplataList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "racun")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "racun", fetch = FetchType.EAGER)
     private List<Transakcija> transakcijaList;
     @JoinColumn(name = "idkom", referencedColumnName = "idkom")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Komitent idkom;
     @JoinColumn(name = "idmes", referencedColumnName = "idmes")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Mesto idmes;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idracna")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idracna", fetch = FetchType.EAGER)
     private List<Prenos> prenosList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idracsa")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idracsa", fetch = FetchType.EAGER)
     private List<Prenos> prenosList1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idracna")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idracna", fetch = FetchType.EAGER)
     private List<Uplata> uplataList;
 
     public Racun() {

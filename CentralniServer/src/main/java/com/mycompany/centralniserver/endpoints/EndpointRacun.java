@@ -72,7 +72,6 @@ public class EndpointRacun {
             objMsg.setIntProperty("request", 5);
         } catch (JMSException ex) {}
         producer.send(requestTopic, objMsg);
-        
         return Response.status(Response.Status.OK).build();
     }
     

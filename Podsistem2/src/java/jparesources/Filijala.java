@@ -11,6 +11,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -55,12 +56,12 @@ public class Filijala implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "adresa")
     private String adresa;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idfil")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idfil", fetch = FetchType.EAGER)
     private List<Isplata> isplataList;
     @JoinColumn(name = "idmes", referencedColumnName = "idmes")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Mesto idmes;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idfil")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idfil", fetch = FetchType.EAGER)
     private List<Uplata> uplataList;
 
     public Filijala() {

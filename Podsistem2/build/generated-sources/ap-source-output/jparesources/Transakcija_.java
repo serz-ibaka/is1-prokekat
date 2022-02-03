@@ -10,7 +10,7 @@ import jparesources.Racun;
 import jparesources.TransakcijaPK;
 import jparesources.Uplata;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2022-02-01T21:27:24")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2022-02-03T03:57:24")
 @StaticMetamodel(Transakcija.class)
 public class Transakcija_ { 
 

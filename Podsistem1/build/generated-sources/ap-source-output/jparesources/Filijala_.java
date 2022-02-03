@@ -5,7 +5,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import jparesources.Mesto;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2022-01-29T18:09:34")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2022-02-02T23:05:07")
 @StaticMetamodel(Filijala.class)
 public class Filijala_ { 
 
